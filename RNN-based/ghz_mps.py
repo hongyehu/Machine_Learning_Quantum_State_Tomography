@@ -63,29 +63,23 @@ class GHZ():
             self.MPS.append(cc)
         else:
             raise NotImplementedError('MPS not implemented')
-        self.state = self.state_init()
-    def state_init(self):
-        v = ([-1,1],)
-        for i in range(2, self.N):
-            v = v + ([i-1,-i,i],)
-        v = v + ([-self.N, self.N-1],)
-        return ncon(self.MPS, v)
     def prob(self, a):
         '''
         a: one-dim np-array containing POVM result: [N]
         '''
-        AA = [self.state]
-        for i in range(self.N):
-            AA.append(self.M[a[i],:,:])
-        AA.append(self.state)
-        v = ([i for i in range(1,self.N+1)],)
-        for i in range(1,self.N+1):
-            v = v + ([i,i+self.N],)
-        v = v + ([i+self.N for i in range(1,self.N+1)],)
-        return ncon(AA,v).real
+        P = ncon(( self.MPS[0], self.MPS[0],self.M[a[0],:,:]),([1,-1],[2,-2],[1,2]))  
+        # contracting the entire TN for each sample S[i,:]  
+        for j in range(1,self.N-1):
+            P = ncon((P,self.MPS[j], self.MPS[j],self.M[a[j],:,:]),([1,2],[1,3,-1],[2,4,-2],[3,4]))
+
+        P = ncon((P,self.MPS[self.N-1], self.MPS[self.N-1],self.M[a[self.N-1],:,:]),([1,2],[3,1],[4,2],[3,4]))
+        return P.real
     def batch_prob(self, a):
         # a:[bs, N]
         probs = np.zeros(a.shape[0])
         for i in range(a.shape[0]):
             probs[i] = self.prob(a[i,:])
         return probs
+
+
+        

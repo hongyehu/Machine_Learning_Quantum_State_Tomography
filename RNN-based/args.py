@@ -8,15 +8,15 @@ parser = argparse.ArgumentParser()
 
 ############################################
 group = parser.add_argument_group('network parameters')
-group.add_argument('--N', type=int, default=40, help='number of qubits')
-group.add_argument('--Ns', type = int, default = 80000, help = 'number of experiments')
+group.add_argument('--N', type=int, default=80, help='number of qubits')
+group.add_argument('--Ns', type = int, default = 100000, help = 'number of experiments')
 group.add_argument('--state', type=str, default= 'GHZ', help='quantum state')
 group.add_argument('--charset_length', type=int, default = 5, help = 'number of char set length')
 group.add_argument('--hidden_size', type=int, default = 100, help='hidden state size in RNN')
 group.add_argument('--num_layers', type=int, default = 3, help='number of RNN units(depth) in one step')
 group.add_argument('--dtype',
                    type=str,
-                   default='float32',
+                   default='float64',
                    choices=['float32', 'float64'],
                    help='dtype')
 ############################################
@@ -27,7 +27,7 @@ group.add_argument('--weight_decay',
                    type=float,
                    default=5e-5,
                    help='weight decay')
-group.add_argument('--epoch', type=int, default=500, help='number of epoches')
+group.add_argument('--epoch', type=int, default=100000, help='number of epoches')
 group.add_argument('--clip_grad',
                    type=float,
                    default=1,
@@ -53,7 +53,7 @@ group.add_argument(
     help='number of epochs to keep saved network weights, 0 for disabled')
 group.add_argument('--cuda',
                    type=str,
-                   default='0',
+                   default='',
                    help='IDs of GPUs to use, empty for disabled')
 group.add_argument(
     '--out_infix',

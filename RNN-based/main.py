@@ -11,6 +11,7 @@ import utils
 from args import args
 from utils import my_log
 from rnn import RNN
+import numpy as np
 
 torch.backends.cudnn.benchmark = True
 
@@ -37,21 +38,23 @@ def main():
         utils.clear_log()
     utils.print_args()
 
-    model = RNN(device, Number_qubits = 4,hidden_size = 128, num_layers = 3)
+    model = RNN(args.device, Number_qubits = args.N,charset_length = args.charset_length,\
+        hidden_size = args.hidden_size, num_layers = args.num_layers)
     data = prepare_data(args.N, './data.txt')
 
     model.train(True)
     my_log('Total nparams: {}'.format(utils.get_nparams(model)))
+    model.to(args.device)
 
-    if args.cuda and torch.cuda.device_count() > 1:
-        model = utils.data_parallel_wrap(model)
+    # if args.cuda and torch.cuda.device_count() > 1:
+    #     model = utils.data_parallel_wrap(model)
 
     params = [x for x in model.parameters() if x.requires_grad]
     optimizer = torch.optim.AdamW(params,
                                   lr=args.lr,
                                   weight_decay=args.weight_decay)
     if last_epoch >= 0:
-        utils.load_checkpoint(last_epoch, flow, optimizer)
+        utils.load_checkpoint(last_epoch, model, optimizer)
 
 
     init_time = time.time() - start_time
@@ -60,17 +63,18 @@ def main():
     my_log('Training...')
     start_time = time.time()
     for epoch_idx in range(last_epoch + 1, args.epoch + 1):
-        for batch_idx in range(1000):
+        for batch_idx in range(int(args.Ns/args.batch_size)):
             optimizer.zero_grad()
-            idx = np.random.randint(low=0,high=int(args.Ns-1),size=(args.batch_size,))
+            # idx = np.random.randint(low=0,high=int(args.Ns-1),size=(args.batch_size,))
+            idx = np.arange(args.batch_size)+batch_idx*args.batch_size
             train_data = data[idx]
-            loss = -model.log_prob(torch.from_numpy(train_data)).mean()
+            loss = -model.log_prob(torch.from_numpy(train_data).to(args.device)).mean()
             loss.backward()
             if args.clip_grad:
                 clip_grad_norm_(params, args.clip_grad)
             optimizer.step()
             if batch_idx == 0:
-                my_log('epoch_idx{} loss{:.8g} time{:.3f}'.format(
+                my_log('epoch_idx {} loss {:.8g} time {:.3f}'.format(
                     epoch_idx, loss.item(), time.time()-start_time
                     ))
         if (args.out_filename and args.save_epoch
@@ -80,7 +84,7 @@ def main():
                 'optimizer': optimizer.state_dict(),
             }
             torch.save(state,
-                       '{}/save/{}.state'.format(args.out_filename, epoch_idx))
+                       '{}_save/{}.state'.format(args.out_filename, epoch_idx))
             if epoch_idx > 0 and (epoch_idx - 1) % args.keep_epoch != 0:
                 os.remove('{}_save/{}.state'.format(args.out_filename,
                                                     epoch_idx - 1))
