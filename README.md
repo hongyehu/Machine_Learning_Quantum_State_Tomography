@@ -7,7 +7,7 @@ My implementation is largely inspired by Juan's official [tensorflow implementat
 
 # Running experiments
 
-`main.py` is the code for training the network. All adjustable arguments are stored in `args.py`, together with their default values when we were training on the CelebA dataset. They can be displayed via `python main.py --help`
+`main.py` is the code for training the network. All adjustable arguments are stored in `args.py`. They can be displayed via `python main.py --help`
 
 ```
 usage: main.py [-h] [--N N] [--Ns NS] [--state STATE] [--charset_length CHARSET_LENGTH]
