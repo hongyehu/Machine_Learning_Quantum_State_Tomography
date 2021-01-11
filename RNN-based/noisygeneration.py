@@ -143,7 +143,7 @@ class PaMPS():
  
     def samples(self, Ns=1000000, fname='train.txt'):
         
-        f = open(fname, 'w')
+        # f = open(fname, 'w')
         f2 = open("data.txt", 'w')
 
         state = np.zeros((self.N),dtype=np.uint8);
@@ -182,11 +182,11 @@ class PaMPS():
             one_hot = np.squeeze(np.reshape(np.eye(self.K)[state],[1,self.N*self.K] ).astype(np.uint8)).tolist()
             # print( state)
             #print one_hot
-            for item in one_hot:
-                f.write("%s " % item)  
+            # for item in one_hot:
+            #     f.write("%s " % item)  
             
-            f.write('\n') 
-            f.flush(); 
+            # f.write('\n') 
+            # f.flush(); 
       
             for item in state:
                 f2.write("%s " % item)
@@ -196,7 +196,7 @@ class PaMPS():
 
   
  
-        f.close()
+        # f.close()
         return 
  
     def pXp(self,theta,phi):

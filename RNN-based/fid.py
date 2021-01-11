@@ -17,12 +17,13 @@ import random
 
 torch.backends.cudnn.benchmark = True
 
-def classical_fidelity(model, mps_state):
-    sample = model.generate(1000)
-    prob_model = model.log_prob(sample).exp().detach().numpy()
-    prob_true = mps_state.batch_prob(sample.detach().numpy()[:,1:])
-    print('prob_model: ', prob_model[:10])
-    print('prob_true: ', prob_true[:10])
+def classical_fidelity(model, mps_state, print_prob = True):
+    sample = model.generate(2000).to(args.device)
+    prob_model = model.log_prob(sample).exp().detach().cpu().numpy()
+    prob_true = mps_state.batch_prob(sample.detach().cpu().numpy())
+    if print_prob:
+        print('prob_model: ', prob_model[:30])
+        print('prob_true: ', prob_true[:30])
     return np.mean(np.sqrt(prob_true/prob_model))
 def random_data(batch_size, Nqubits, filename):
     data = np.zeros((batch_size, Nqubits)).astype(int)
@@ -34,7 +35,7 @@ def random_data(batch_size, Nqubits, filename):
     return np.concatenate((SOS, data),axis = 1).astype(np.int)
 def cfid(model, mps_state, filename):
     r_data = np.array(random_data(10000,args.N, filename)).astype(np.int)
-    prob_true = mps_state.batch_prob(r_data[:,1:])
+    prob_true = mps_state.batch_prob(r_data[:,:])
     prob_model = model.log_prob(torch.from_numpy(r_data)).exp().detach().numpy()
     print('prob_model: ', prob_model)
     print('prob_true: ', prob_true)

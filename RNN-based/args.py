@@ -8,10 +8,10 @@ parser = argparse.ArgumentParser()
 
 ############################################
 group = parser.add_argument_group('network parameters')
-group.add_argument('--N', type=int, default=80, help='number of qubits')
+group.add_argument('--N', type=int, default=40, help='number of qubits')
 group.add_argument('--Ns', type = int, default = 100000, help = 'number of experiments')
 group.add_argument('--state', type=str, default= 'GHZ', help='quantum state')
-group.add_argument('--charset_length', type=int, default = 5, help = 'number of char set length')
+group.add_argument('--charset_length', type=int, default = 4, help = 'number of char set length')
 group.add_argument('--hidden_size', type=int, default = 100, help='hidden state size in RNN')
 group.add_argument('--num_layers', type=int, default = 3, help='number of RNN units(depth) in one step')
 group.add_argument('--dtype',
@@ -21,7 +21,7 @@ group.add_argument('--dtype',
                    help='dtype')
 ############################################
 group = parser.add_argument_group('optimizer parameters')
-group.add_argument('--batch_size', type=int, default=500, help='batch size')
+group.add_argument('--batch_size', type=int, default=1000, help='batch size')
 group.add_argument('--lr', type=float, default=1e-3, help='learning rate')
 group.add_argument('--weight_decay',
                    type=float,
