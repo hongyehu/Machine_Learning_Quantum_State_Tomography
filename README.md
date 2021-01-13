@@ -1,4 +1,4 @@
-# Machine_Learning_Quantum_State_Tomography
+# Machine Learning Quantum State Tomography
 Machine learning quantum state tomography has been a heuristic method for quantum state tomography. 
 
 This repository contains the pytorch implementation for using generative models from unsupervised learning (RNN or attention-based RNN) to reconstructing quantum states, which is based on Juan Carrasquilla, Giacomo Torlai, Roger G. Melko & Leandro Aolita's interesting [paper](https://www.nature.com/articles/s42256-019-0028-1).
@@ -9,6 +9,7 @@ My implementation is largely inspired by Juan's official [tensorflow implementat
 
 `main.py` is the code for training the network. All adjustable arguments are stored in `args.py`. They can be displayed via `python main.py --help`
 
+Usually, a 80 qubits GHZ state can be efficiently learned with 80000 POVM experiments around 5 epochs.
 ```
 usage: main.py [-h] [--N N] [--Ns NS] [--state STATE] [--charset_length CHARSET_LENGTH]
                [--hidden_size HIDDEN_SIZE] [--num_layers NUM_LAYERS] [--dtype {float32,float64}]
@@ -51,10 +52,6 @@ system parameters:
   --keep_epoch KEEP_EPOCH
                         number of epochs to keep saved network weights, 0 for disabled
   --cuda CUDA           IDs of GPUs to use, empty for disabled
-  --out_infix OUT_INFIX
-                        infix in output filename to distinguish repeated runs
-  -o OUT_DIR, --out_dir OUT_DIR
-                        directory for output, empty for disabled
 ```
 
 During training, the log file and the network weights will be saved in `out_dir`.
