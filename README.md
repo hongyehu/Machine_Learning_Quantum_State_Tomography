@@ -10,6 +10,8 @@ My implementation is largely inspired by Juan's official [tensorflow implementat
 `main.py` is the code for training the network. All adjustable arguments are stored in `args.py`. They can be displayed via `python main.py --help`
 
 Usually, a 80 qubits GHZ state can be efficiently learned with 80000 POVM experiments around 5 epochs.
+
+*char set* is the finite size of integers associated with POVM outcomes. For example, if you choose tetrahedral POVM, at each qubit we have four POVM measurements: M0, M1, M2, M3. Then we use 0, 1, 2, 3 to indicating the corresponding results. Then charset_length = 4. This is an analog of the dictionary set in the natural language processing.
 ```
 usage: main.py [-h] [--N N] [--Ns NS] [--state STATE] [--charset_length CHARSET_LENGTH]
                [--hidden_size HIDDEN_SIZE] [--num_layers NUM_LAYERS] [--dtype {float32,float64}]
